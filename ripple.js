@@ -12,8 +12,6 @@ export class Ripple {
   initRipple(imgPos, x, y) {
     this.radius = 0;
     this.#maxRadius = this.getMaxDistance(imgPos, x, y);
-
-    return Math.ceil(this.#maxRadius / this.#speed) * 1.5;
   }
 
   animate() {

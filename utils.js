@@ -5,12 +5,8 @@ export function distance(x1, y1, x2, y2) {
   return Math.sqrt(x * x + y * y);
 }
 
-export function collide(x1, y1, x2, y2, radius) {
-  if (distance(x1, y1, x2, y2) <= radius) {
-    return true;
-  } else {
-    return false;
-  }
+export function collide(pos1, pos2, radius) {
+  return distance(pos1.x, pos1.y, pos2.x, pos2.y) <= radius;
 }
 
 export function getBWValue(r, g, b, isReversed) {
