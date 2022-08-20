@@ -1,5 +1,5 @@
 import { Ripple } from './ripple.js';
-import { Dot } from './dot.js';
+import Dot from './dot.js';
 import { collide, getBWValue } from './utils.js';
 import BaseCanvas from './lib/baseCanvas.js';
 
@@ -89,7 +89,7 @@ export default class App extends BaseCanvas {
         b = imgData.data[pixelIndex + 2];
 
         this.#dotItems.push(
-          new Dot(x, y, this.#radius, this.#pixelSize, r, g, b)
+          new Dot({x, y}, this.#radius, this.#pixelSize, `rgb(${r}, ${g}, ${b})`)
         ); // prettier-ignore
       }
     }
@@ -99,7 +99,7 @@ export default class App extends BaseCanvas {
     this.#ripple.animate(this.ctx);
 
     this.#dotItems.forEach(
-      (dotItem) => collide(dotItem, this.#clickedPos, this.#ripple.radius) && dotItem.animate(this.ctx)
+      (dotItem) => collide(dotItem.pos, this.#clickedPos, this.#ripple.radius) && dotItem.animate(this.ctx)
     ); // prettier-ignore
 
     window.requestAnimationFrame(this.animate.bind(this));

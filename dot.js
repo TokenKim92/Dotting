@@ -1,69 +1,64 @@
-const PI2 = Math.PI * 2;
-const BOUNCE = 0.82;
+import { PI2 } from './utils.js';
+export default class Dot {
+  static BOUNCE = 0.82;
 
-export class Dot {
-  #x;
-  #y;
+  #pos = {
+    x: 0,
+    y: 0,
+  };
   #targetRadius;
-  #radius;
-  #radiusV;
+  #currentRadius;
+  #radiusVelocity;
   #pixelSize;
   #pixelHalfSize;
-  #r;
-  #g;
-  #b;
+  #color;
 
-  constructor(x, y, radius, pixelSize, r, g, b, scale) {
-    this.#x = x;
-    this.#y = y;
+  constructor(pos, radius, pixelSize, color) {
+    this.#pos = pos;
+
     this.#targetRadius = radius;
-    this.#radius = 0;
-    this.#radiusV = 0;
+    this.#currentRadius = 0;
+    this.#radiusVelocity = 0;
     this.#pixelSize = pixelSize;
     this.#pixelHalfSize = pixelSize / 2;
-    this.#r = r;
-    this.#g = g;
-    this.#b = b;
+    this.#color = color;
   }
 
   animate(ctx) {
-    ctx.beginPath();
-    ctx.fillStyle = '#000';
+    this.#clear(ctx);
+    this.#calculateRadius();
+    this.#draw(ctx);
+  }
+
+  #clear(ctx) {
+    ctx.fillStyle = '#000000';
     ctx.fillRect(
-      this.#x - this.#pixelHalfSize,
-      this.#y - this.#pixelHalfSize,
+      this.#pos.x - this.#pixelHalfSize,
+      this.#pos.y - this.#pixelHalfSize,
       this.#pixelSize,
       this.#pixelSize
     );
+  }
 
-    const accel = (this.#targetRadius - this.#radius) / 2;
-    this.#radiusV = (this.#radiusV + accel) * BOUNCE;
-    this.#radius += this.#radiusV;
+  #calculateRadius() {
+    const accel = (this.#targetRadius - this.#currentRadius) / 2;
+    this.#radiusVelocity = (this.#radiusVelocity + accel) * Dot.BOUNCE;
+    this.#currentRadius += this.#radiusVelocity;
+  }
 
+  #draw(ctx) {
     ctx.beginPath();
-    ctx.fillStyle = `rgb(${this.#r}, ${this.#g}, ${this.#b})`;
-    ctx.arc(this.x, this.y, this.#radius, 0, PI2, false);
+    ctx.fillStyle = this.#color;
+    ctx.arc(this.#pos.x, this.#pos.y, this.#currentRadius, 0, PI2);
     ctx.fill();
   }
 
   reset() {
-    this.#radius = 0;
-    this.#radiusV = 0;
+    this.#currentRadius = 0;
+    this.#radiusVelocity = 0;
   }
 
-  get x() {
-    return this.#x;
-  }
-
-  set x(x) {
-    this.#x = x;
-  }
-
-  get y() {
-    return this.#y;
-  }
-
-  set y(y) {
-    this.#y = y;
+  get pos() {
+    return this.#pos;
   }
 }
