@@ -1,9 +1,11 @@
 import Ripple from './ripple.js';
 import Dot from './dot.js';
-import { collide, getBWValue } from './utils.js';
-import BaseCanvas from './lib/baseCanvas.js';
+import { collide } from './utils.js';
+import BaseCanvas from '../lib/baseCanvas.js';
+import Watermark from '../lib/watermark.js';
 
-export default class App extends BaseCanvas {
+export default class Dotting extends BaseCanvas {
+  #watermark;
   #radius = 10;
   #pixelSize = 24;
   #dotItems = [];
@@ -21,27 +23,42 @@ export default class App extends BaseCanvas {
     y: 0,
   };
 
-  constructor(rippleSpeed) {
+  constructor(url, rippleSpeed = 10) {
     super(true);
+
+    this.#watermark = new Watermark(
+      "Basic code by 'Interactive Developer'",
+      'Arial'
+    );
 
     this.#ripple = new Ripple(rippleSpeed);
 
     this.#image = new Image();
-    this.#image.src = 'imgs/gogh2.jpg';
+    this.#image.src = url;
     this.#image.onload = () => {
       this.#isLoaded = true;
-      this.#init();
+      this.resize();
     };
 
-    this.addEventToCanvas('click', this.onClick);
-    window.addEventListener('resize', this.resize.bind(this), false);
-    this.resize();
+    this.#watermark.addEventToCanvas('click', this.onClick);
+  }
 
-    window.requestAnimationFrame(this.animate.bind(this));
+  bringToStage() {
+    super.bringToStage();
+    this.#watermark.bringToStage();
+    this.#watermark.addEventToCanvas('click', this.onClick);
+  }
+
+  removeFromStage() {
+    super.removeFromStage();
+    this.#watermark.removeFromStage();
+    this.#watermark.removeEventFromCanvas('click', this.onClick);
   }
 
   resize() {
     super.resize();
+    this.#watermark.resize();
+    this.#watermark.draw();
 
     this.#isLoaded && this.#init();
   }
@@ -101,8 +118,6 @@ export default class App extends BaseCanvas {
     this.#dotItems.forEach(
       (dotItem) => collide(dotItem.pos, this.#clickedPos, this.#ripple.radius) && dotItem.animate(this.ctx)
     ); // prettier-ignore
-
-    window.requestAnimationFrame(this.animate.bind(this));
   }
 
   onClick = (clickEvent) => {
@@ -124,7 +139,3 @@ export default class App extends BaseCanvas {
     ); // prettier-ignore
   }
 }
-
-window.onload = () => {
-  new App(10);
-};
