@@ -1,4 +1,4 @@
-import Dotting from './src/dotting.js';
+import './webpack/dist/dotting.min.js';
 
 window.onload = () => {
   new AppBuilder().url('./imgs/gogh1.jpg').rippleSpeed(10).build();

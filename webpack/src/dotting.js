@@ -47,6 +47,11 @@ export default class Dotting extends BaseCanvas {
     super.bringToStage();
     this.#watermark.bringToStage();
     this.#watermark.addEventToCanvas('click', this.onClick);
+
+    this.clearCanvas();
+    this.#dotItems.forEach((dotItem) => dotItem.reset());
+    this.#ripple.stop();
+    this.#drawImage();
   }
 
   removeFromStage() {

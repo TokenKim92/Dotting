@@ -2,8 +2,8 @@ import { distance } from './utils.js';
 
 export default class Ripple {
   #speed;
-  #radius;
-  #maxRadius;
+  #radius = 0;
+  #maxRadius = 0;
 
   constructor(speed) {
     this.#speed = speed;
@@ -25,6 +25,11 @@ export default class Ripple {
     const fromRightBottom = distance({x: imgPos.x + imgPos.width, y: imgPos.y + imgPos.height}, pos); // prettier-ignore
 
     return Math.max(fromLeftTop, fromRightTop, fromLeftBottom, fromRightBottom);
+  }
+
+  stop() {
+    this.#radius = 0;
+    this.#maxRadius = 0;
   }
 
   get #isAchieved() {
