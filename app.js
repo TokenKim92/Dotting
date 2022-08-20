@@ -1,4 +1,4 @@
-import { Ripple } from './ripple.js';
+import Ripple from './ripple.js';
 import Dot from './dot.js';
 import { collide, getBWValue } from './utils.js';
 import BaseCanvas from './lib/baseCanvas.js';
@@ -21,10 +21,10 @@ export default class App extends BaseCanvas {
     y: 0,
   };
 
-  constructor() {
+  constructor(rippleSpeed) {
     super(true);
 
-    this.#ripple = new Ripple(10);
+    this.#ripple = new Ripple(rippleSpeed);
 
     this.#image = new Image();
     this.#image.src = 'imgs/gogh2.jpg';
@@ -111,7 +111,7 @@ export default class App extends BaseCanvas {
     this.#dotItems.forEach((dotItem) => dotItem.reset());
     this.#drawImage();
     this.#clickedPos = { x: clickEvent.offsetX, y: clickEvent.offsetY };
-    this.#ripple.initRipple(this.#imgRect, clickEvent.offsetX, clickEvent.offsetY); // prettier-ignore
+    this.#ripple.initRipple(this.#imgRect, {x:clickEvent.offsetX, y:clickEvent.offsetY}); // prettier-ignore
   };
 
   #drawImage() {
@@ -126,5 +126,5 @@ export default class App extends BaseCanvas {
 }
 
 window.onload = () => {
-  new App();
+  new App(10);
 };

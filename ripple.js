@@ -1,6 +1,6 @@
 import { distance } from './utils.js';
 
-export class Ripple {
+export default class Ripple {
   #speed;
   #radius;
   #maxRadius;
@@ -9,29 +9,29 @@ export class Ripple {
     this.#speed = speed;
   }
 
-  initRipple(imgPos, x, y) {
-    this.radius = 0;
-    this.#maxRadius = this.getMaxDistance(imgPos, x, y);
+  initRipple(imgPos, pos) {
+    this.#radius = 0;
+    this.#maxRadius = this.#getMaxDistance(imgPos, pos);
   }
 
   animate() {
-    this.#radius += this.#speed * (this.#radius < this.#maxRadius);
+    this.#isAchieved || (this.#radius += this.#speed);
   }
 
-  getMaxDistance(imgPos, x, y) {
-    const fromLeftTop = distance(imgPos.x, imgPos.y, x, y);
-    const fromRightTop = distance(imgPos.x + imgPos.width, imgPos.y, x, y);
-    const fromLeftBottom = distance(imgPos.x, imgPos.y + imgPos.height, x, y);
-    const fromRightBottom = distance(imgPos.x + imgPos.width, imgPos.y + imgPos.height, x, y); // prettier-ignore
+  #getMaxDistance(imgPos, pos) {
+    const fromLeftTop = distance(imgPos, pos);
+    const fromRightTop = distance({x : imgPos.x + imgPos.width, y: imgPos.y}, pos); // prettier-ignore
+    const fromLeftBottom = distance({x : imgPos.x, y : imgPos.y + imgPos.height}, pos); // prettier-ignore
+    const fromRightBottom = distance({x: imgPos.x + imgPos.width, y: imgPos.y + imgPos.height}, pos); // prettier-ignore
 
     return Math.max(fromLeftTop, fromRightTop, fromLeftBottom, fromRightBottom);
   }
 
-  get radius() {
-    return this.#radius;
+  get #isAchieved() {
+    return this.#radius >= this.#maxRadius;
   }
 
-  set radius(radius) {
-    this.#radius = radius;
+  get radius() {
+    return this.#radius;
   }
 }
