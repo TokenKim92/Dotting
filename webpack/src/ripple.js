@@ -4,14 +4,18 @@ export default class Ripple {
   #speed;
   #radius = 0;
   #maxRadius = 0;
+  #time;
+  #FPS;
 
-  constructor(speed) {
-    this.#speed = speed;
+  constructor(time, FPS = 60) {
+    this.#time = time;
+    this.#FPS = FPS;
   }
 
-  initRipple(imgPos, pos) {
+  init(imgPos, pos) {
     this.#radius = 0;
     this.#maxRadius = this.#getMaxDistance(imgPos, pos);
+    this.#speed = this.#calculateSpeed(this.#maxRadius);
   }
 
   animate() {
@@ -25,6 +29,11 @@ export default class Ripple {
     const fromRightBottom = distance({x: imgPos.x + imgPos.width, y: imgPos.y + imgPos.height}, pos); // prettier-ignore
 
     return Math.max(fromLeftTop, fromRightTop, fromLeftBottom, fromRightBottom);
+  }
+
+  #calculateSpeed(maxRadius) {
+    const FPS_TIME = 1000 / this.#FPS;
+    return maxRadius / (FPS_TIME * this.#time);
   }
 
   stop() {

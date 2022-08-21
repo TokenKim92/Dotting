@@ -5,9 +5,14 @@ import BaseCanvas from '../lib/baseCanvas.js';
 import Watermark from '../lib/watermark.js';
 
 export default class Dotting extends BaseCanvas {
+  static RADIUS = 10;
+  static PIXEL_SIZE = 24;
+  static SMALL_MODE_RADIUS = 4;
+  static SMALL_MODE_PIXEL_SIZE = 10;
+
   #watermark;
-  #radius = 10;
-  #pixelSize = 24;
+  #radius;
+  #pixelSize;
   #dotItems = [];
   #isLoaded = false;
   #image;
@@ -23,7 +28,7 @@ export default class Dotting extends BaseCanvas {
     y: 0,
   };
 
-  constructor(url, rippleSpeed = 10) {
+  constructor(url, rippleTime = 5, FPS = 60) {
     super(true);
 
     this.#watermark = new Watermark(
@@ -31,7 +36,7 @@ export default class Dotting extends BaseCanvas {
       'Arial'
     );
 
-    this.#ripple = new Ripple(rippleSpeed);
+    this.#ripple = new Ripple(rippleTime, FPS);
 
     this.#image = new Image();
     this.#image.src = url;
@@ -40,6 +45,7 @@ export default class Dotting extends BaseCanvas {
       this.resize();
     };
 
+    this.#initRadiusAndPixelSize();
     this.#watermark.addEventToCanvas('click', this.onClick);
   }
 
@@ -65,13 +71,25 @@ export default class Dotting extends BaseCanvas {
     this.#watermark.resize();
     this.#watermark.draw();
 
+    this.#ripple.stop();
     this.#isLoaded && this.#init();
+    this.#initRadiusAndPixelSize();
   }
 
   #init() {
     this.#calculateImageRect();
     this.#drawImage();
     this.#initDotItems();
+  }
+
+  #initRadiusAndPixelSize() {
+    if (!this.isMatchMedia) {
+      this.#radius = Dotting.RADIUS;
+      this.#pixelSize = Dotting.PIXEL_SIZE;
+    } else {
+      this.#radius = Dotting.SMALL_MODE_RADIUS;
+      this.#pixelSize = Dotting.SMALL_MODE_PIXEL_SIZE;
+    }
   }
 
   #calculateImageRect() {
@@ -81,11 +99,13 @@ export default class Dotting extends BaseCanvas {
     if (imgRatio > stageRatio) {
       this.#imgRect.width = this.stageWidth;
       this.#imgRect.height = Math.round(this.#image.height * (this.stageWidth / this.#image.width)); // prettier-ignore
+      this.#imgRect.x = 0;
       this.#imgRect.y = Math.round( (this.stageHeight - this.#imgRect.height) / 2); // prettier-ignore
     } else {
       this.#imgRect.width = Math.round(this.#image.width * (this.stageHeight / this.#image.height)); // prettier-ignore
       this.#imgRect.height = this.stageHeight;
       this.#imgRect.x = Math.round((this.stageWidth - this.#imgRect.width) / 2);
+      this.#imgRect.y = 0;
     }
   }
 

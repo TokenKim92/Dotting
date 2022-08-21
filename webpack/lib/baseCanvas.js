@@ -75,17 +75,17 @@ export default class BaseCanvas {
   }
 
   get isMatchMedia() {
-    return this.getSizeMode() === BaseCanvas.SMALL_MODE;
+    return this.sizeMode === BaseCanvas.SMALL_MODE;
   }
 
   get isHeighResolution() {
-    return this.getSizeMode() === BaseCanvas.LARGE_MODE;
+    return this.sizeMode === BaseCanvas.LARGE_MODE;
   }
 
   get sizeMode() {
     const canvasSizeModes = [
-      { mode: BaseCanvas.SMALL_MODE, size: 500 },
-      { mode: BaseCanvas.REGULAR_MODE, size: 1000 },
+      { mode: BaseCanvas.SMALL_MODE, size: 768 },
+      { mode: BaseCanvas.REGULAR_MODE, size: 1374 },
       { mode: BaseCanvas.MEDIUM_MODE, size: 1980 },
       { mode: BaseCanvas.LARGE_MODE, size: 3840 },
     ];

@@ -1,12 +1,12 @@
-import './webpack/dist/dotting.min.js';
+//import './webpack/dist/dotting.min.js';
+import Dotting from './webpack/src/dotting.js';
 
 window.onload = () => {
-  new AppBuilder().url('./imgs/gogh1.jpg').rippleSpeed(10).build();
+  new AppBuilder().url('./imgs/gogh1.jpg').build();
 };
 
 class AppBuilder {
   #app;
-  #speed;
   #url;
 
   url(url) {
@@ -14,13 +14,8 @@ class AppBuilder {
     return this;
   }
 
-  rippleSpeed(speed) {
-    this.#speed = speed;
-    return this;
-  }
-
   build() {
-    this.#app = new Dotting(this.#url, this.#speed);
+    this.#app = new Dotting(this.#url);
     window.addEventListener('resize', this.resize.bind(this), false);
     window.requestAnimationFrame(this.animate);
 
