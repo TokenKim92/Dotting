@@ -1,5 +1,5 @@
-//import './webpack/dist/dotting.min.js';
-import Dotting from './webpack/src/dotting.js';
+import './webpack/dist/dotting.min.js';
+//import Dotting from './webpack/src/dotting.js';
 
 window.onload = () => {
   new AppBuilder().url('./imgs/gogh1.jpg').build();

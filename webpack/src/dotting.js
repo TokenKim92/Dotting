@@ -151,7 +151,7 @@ export default class Dotting extends BaseCanvas {
     this.#dotItems.forEach((dotItem) => dotItem.reset());
     this.#drawImage();
     this.#clickedPos = { x: clickEvent.offsetX, y: clickEvent.offsetY };
-    this.#ripple.initRipple(this.#imgRect, {x:clickEvent.offsetX, y:clickEvent.offsetY}); // prettier-ignore
+    this.#ripple.init(this.#imgRect, {x:clickEvent.offsetX, y:clickEvent.offsetY}); // prettier-ignore
   };
 
   #drawImage() {
