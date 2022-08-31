@@ -3,12 +3,13 @@ import Dot from './dot.js';
 import { collide } from './utils.js';
 import BaseCanvas from '../lib/baseCanvas.js';
 import Watermark from '../lib/watermark.js';
+import TypingBanner from './typingBanner.js';
 
 export default class Dotting extends BaseCanvas {
-  static RADIUS = 10;
-  static PIXEL_SIZE = 24;
-  static SMALL_MODE_RADIUS = 4;
-  static SMALL_MODE_PIXEL_SIZE = 10;
+  static RADIUS = 6;
+  static PIXEL_SIZE = (Dotting.RADIUS + 1) * 2;
+  static SMALL_MODE_RADIUS = Dotting.RADIUS / 2;
+  static SMALL_MODE_PIXEL_SIZE = (Dotting.SMALL_MODE_RADIUS + 1) * 2;
 
   #watermark;
   #radius;
@@ -27,16 +28,18 @@ export default class Dotting extends BaseCanvas {
     x: 0,
     y: 0,
   };
+  #explainBanner;
 
-  constructor(url, rippleTime = 5, FPS = 60) {
+  constructor(url, fontName = 'Arial', rippleTime = 3, FPS = 60) {
     super(true);
 
     this.#watermark = new Watermark(
       "Basic code by 'Interactive Developer'",
-      'Arial'
+      fontName
     );
 
     this.#ripple = new Ripple(rippleTime, FPS);
+    this.#explainBanner = new TypingBanner(fontName, 50, '#ffffff', '#2f2f2fcc'); //prettier-ignore
 
     this.#image = new Image();
     this.#image.src = url;
@@ -47,6 +50,8 @@ export default class Dotting extends BaseCanvas {
 
     this.#initRadiusAndPixelSize();
     this.#watermark.addEventToCanvas('click', this.onClick);
+
+    this.#explainBanner.show(300);
   }
 
   bringToStage() {
@@ -58,16 +63,22 @@ export default class Dotting extends BaseCanvas {
     this.#dotItems.forEach((dotItem) => dotItem.reset());
     this.#ripple.stop();
     this.#drawImage();
+
+    this.#explainBanner.setMessage();
+    this.#explainBanner.show(300);
   }
 
   removeFromStage() {
     super.removeFromStage();
+    this.#explainBanner.hide();
     this.#watermark.removeFromStage();
     this.#watermark.removeEventFromCanvas('click', this.onClick);
   }
 
   resize() {
     super.resize();
+    this.#explainBanner.resize();
+
     this.#watermark.resize();
     this.#watermark.draw();
 
@@ -137,8 +148,9 @@ export default class Dotting extends BaseCanvas {
     }
   }
 
-  animate() {
+  animate(curTime) {
     this.#ripple.animate(this.ctx);
+    this.#explainBanner.animate(curTime);
 
     this.#dotItems.forEach(
       (dotItem) => collide(dotItem.pos, this.#clickedPos, this.#ripple.radius) && dotItem.animate(this.ctx)
@@ -147,6 +159,7 @@ export default class Dotting extends BaseCanvas {
 
   onClick = (clickEvent) => {
     this.clearCanvas();
+    this.#explainBanner.hide();
 
     this.#dotItems.forEach((dotItem) => dotItem.reset());
     this.#drawImage();

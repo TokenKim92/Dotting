@@ -1,8 +1,7 @@
 import './webpack/dist/dotting.min.js';
-//import Dotting from './webpack/src/dotting.js';
 
 window.onload = () => {
-  new AppBuilder().url('./imgs/gogh1.jpg').build();
+  new AppBuilder().url('./imgs/yeji.png').build();
 };
 
 class AppBuilder {
@@ -15,15 +14,18 @@ class AppBuilder {
   }
 
   build() {
-    this.#app = new Dotting(this.#url);
-    window.addEventListener('resize', this.resize.bind(this), false);
-    window.requestAnimationFrame(this.animate);
-
-    return this.#app;
+    WebFont.load({
+      google: { families: ['Fjalla One'] },
+      fontactive: () => {
+        this.#app = new Dotting(this.#url, 'Fjalla One');
+        window.addEventListener('resize', this.resize.bind(this), false);
+        window.requestAnimationFrame(this.animate);
+      },
+    });
   }
 
-  animate = () => {
-    this.#app.animate();
+  animate = (curTime) => {
+    this.#app.animate(curTime);
     window.requestAnimationFrame(this.animate);
   };
 
